@@ -1,0 +1,8 @@
+APScheduler==3.10.4
+DingtalkChatbot==1.5.7
+fastapi==0.112.2
+requests==2.32.3
+uvicorn==0.30.6
+python-dotenv==1.0.1
+celery==5.4.0
+redis==5.0.8

@@ -1,0 +1,69 @@
+version: '2'
+
+services:
+
+  celery-work:
+    image: celery-work
+    container_name: celery-work
+    build:
+      context: .
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+      - TIME_LIMIT=${TIME_LIMIT}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_DB=${REDIS_DB}
+      - CELERY_BROKER=${CELERY_BROKER}
+      - CELERY_BACKEND=${CELERY_BACKEND}
+      - SECRET=${SECRET}
+      - WEBHOOK=${WEBHOOK}
+    depends_on:
+      - redis
+    command: celery -A app.celery.tasks worker --loglevel=${LOG_LEVEL}
+
+  celery-beat:
+    image: celery-beat
+    container_name: celery-beat
+    build:
+      context: .
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_DB=${REDIS_DB}
+      - CELERY_BROKER=${CELERY_BROKER}
+      - CELERY_BACKEND=${CELERY_BACKEND}
+    depends_on:
+      - redis
+    command: celery -A app.celery.tasks beat --loglevel=${LOG_LEVEL}
+
+  fastapi:
+    image: fastapi
+    container_name: fastapi
+    build:
+      context: .
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+      - LOG_LEVEL=${LOG_LEVEL}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_DB=${REDIS_DB}
+    depends_on:
+      - redis
+    ports:
+      - 8081:8000
+    #command: python main.py
+
+  redis:
+    image: redis:7
+    container_name: redis
+    command: redis-server --appendonly yes
+    #  --requirepass '13m!aomaosimon@' #开启持久化的支持并设置认证密码
+    restart: always
+    volumes:
+      - ./data/redis/data:/data
+    ports:
+      - 6279:6379
