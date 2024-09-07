@@ -28,7 +28,7 @@ def keep_session_to_live():
     obj = Session()
     sessions = obj.get_sessions()
     for session in sessions:
-        logger.info(f'get_card_count: {get_card_count(session)}')
+        logger.info(f'get_card_count: {get_card_count.delay(session)}')
     return True
 
 
@@ -56,7 +56,7 @@ def cron_check():
     for session in sessions:
         orders = obj.get_orders(session)
         for order in orders:
-            check(session, order)
+            check.delay(session, order)
     return True
 
 
