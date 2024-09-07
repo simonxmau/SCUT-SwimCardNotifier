@@ -4,16 +4,16 @@ from app.config import redis_conn as redis
 class Session:
 
     def add_session(self, session):
-        return redis.lpush('session::all', session)
+        return redis.sadd('session::all', session)
 
     def get_sessions(self):
-        return redis.lrange('session::all', 0, -1)
+        return redis.smembers('session::all')
 
     def add_order(self, session, order_no):
-        return redis.lpush(f'session::order_no::{session}', order_no)
+        return redis.sadd(f'session::order_no::{session}', order_no)
 
     def get_orders(self, session):
-        return redis.lrange(f'session::order_no::{session}', 0, -1)
+        return redis.smembers(f'session::order_no::{session}')
 
 
 class Order:
