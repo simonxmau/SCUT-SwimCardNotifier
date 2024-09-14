@@ -3,3 +3,4 @@
 .venv
 *.log
 celerybeat-schedule.db
+data
