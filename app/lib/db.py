@@ -15,6 +15,11 @@ class Session:
     def get_orders(self, session):
         return redis.smembers(f'session::order_no::{session}')
 
+    def add_userid(self, session, user_id):
+        return redis.set(f'session::userid::{session}', str(user_id))
+    def get_userid(self, session):
+        return redis.get(f'session::userid::{session}')
+
 
 class Order:
 

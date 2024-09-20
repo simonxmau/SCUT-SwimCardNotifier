@@ -73,8 +73,10 @@ def check(session, order_no):
         logger.info(f'查询结果: order_no={order_no}, remain={remain}, time={time}')
 
         order = Order()
+        session_obj = Session()
+        user_id = session_obj.get_userid(session)
         if int(order.get_last_num(order_no)) != int(remain):
             order.set_last_num(order_no, remain)
-            send(order_no, remain, time)
+            send(order_no, remain, time, user_id)
     except Exception as e:
         send_error(e, order_no, time)

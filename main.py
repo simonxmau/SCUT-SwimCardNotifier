@@ -21,6 +21,7 @@ load_dotenv()
 def add(data: dict):
     session = data.get('session')
     order_no = data.get('order_no')
+    user_id = data.get('user_id')
 
     if not session and not order_no:
         return '参数不完整'
@@ -28,6 +29,7 @@ def add(data: dict):
     s = Session()
     s.add_session(session)
     s.add_order(session, order_no)
+    s.add_userid(session, user_id)
 
     return '添加成功'
 

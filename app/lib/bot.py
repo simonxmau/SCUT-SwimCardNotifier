@@ -11,15 +11,26 @@ secret = cfg_bot.secret
 logger.info(f'读取配置: webhook={webhook}, secret={secret}')
 
 
-def send(order_no, remain, time):
+def send(order_no, remain, time, at_id='', at_all=False):
+    title = f'{order_no} 剩余 {remain} 次'
+    text = f'''
+### **订单次数变动提醒**
+
+**订单号码:** {order_no}
+
+**剩余次数:** {remain}
+
+**通知时间:** {time}
+
+'''
+
+    dingtalk_ids = []
+    if at_id:
+        dingtalk_ids = [at_id]
+        text = text + f'@{at_id}'
+
     bot = DingtalkChatbot(webhook, secret)
-    res = bot.send_markdown(
-        title=f'{order_no} 剩余 {remain} 次',
-        text=f'### **订单次数变动提醒**\n'
-             f'**订单号码:**  {order_no}\n\n'
-             f'**剩余次数:**  {remain}\n\n'
-             f'**通知时间:**  {time}\n\n',
-        is_at_all=True)
+    res = bot.send_markdown(title=title, text=text, is_at_all=at_all, at_dingtalk_ids=dingtalk_ids)
     logger.info(f'推送结果: remain={remain}, order_no={order_no}, time={time}, result={res}')
 
 
